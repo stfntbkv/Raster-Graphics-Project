@@ -1,1 +1,17 @@
 x64/
+
+# Project-specific ignore rules
+*.sln
+*.suo
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.csproj
+*.csproj.user
+*.vbproj
+*.vbproj.user
+*.dbmdl
+*.dbproj.schemaview
+*.pdb
+*.pyc
+*.pyproj
