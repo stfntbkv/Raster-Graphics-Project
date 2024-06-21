@@ -65,15 +65,13 @@ void run() {
 		std::cin >> command;
 	}
 
-
-
-
 }
 int main()
 {
-	run();
-	//PortableAnymap* map = PortableAnymapFactroy::create("imagePPM.ppm");
-	//map->print();
+	//run();
+	PortableAnymap* map = PortableAnymapFactroy::create("imagePPM.ppm");
+	std::cout << std::endl;
+	map->print();
 
 
 	//PortableAnymap* mapBinaryPpm = PortableAnymapFactroy::create("imagePPMbinary.ppm");

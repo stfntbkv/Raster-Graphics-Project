@@ -97,6 +97,11 @@ size_t MyString::getSize() const
     return _size;
 }
 
+bool MyString::isEmpty() const
+{
+    return getSize() == 0;
+}
+
 const char* MyString::c_str() const
 {
     return _data;
@@ -117,12 +122,12 @@ MyString& MyString::operator+=(const MyString& other)
 
 char& MyString::operator[](size_t index)
 {
-    return _data[index]; // no security check!!
+    return _data[index]; 
 }
 
 const char& MyString::operator[](size_t index) const
 {
-    return _data[index]; // no security check!!
+    return _data[index]; 
 }
 
 std::ostream& operator<<(std::ostream& os, const MyString& obj)

@@ -17,6 +17,7 @@ public:
 
     size_t getCapacity() const;
     size_t getSize() const;
+    bool isEmpty() const;
 
     const char* c_str() const;
 

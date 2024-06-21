@@ -13,11 +13,7 @@ void printBinaryRepresentation(const unsigned char* data, size_t dataSize) {
     }
     std::cout << std::endl;
 }
-PortableAnymap *PortableAnymapFactroy::createP4(const MyString& filename,std::ifstream& ifs) {
-    size_t height, width;
-    ifs >> width;
-    ifs >> height;
-    ifs.ignore();
+PortableAnymap *PortableAnymapFactroy::createP4(const MyString& filename,std::ifstream& ifs, size_t height, size_t width) {
     size_t curPos = ifs.tellg();
     ifs.close();
     std::ifstream ifsBinary(filename.c_str(), std::ios::binary);
@@ -55,13 +51,9 @@ PortableAnymap *PortableAnymapFactroy::createP4(const MyString& filename,std::if
 
 
 }
-PortableAnymap* PortableAnymapFactroy::createP5(const MyString& filename, std::ifstream& ifs)
+PortableAnymap* PortableAnymapFactroy::createP5(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
 {
-    size_t height, width;
     unsigned short int maxValue;
-    ifs >> width;
-    ifs >> height;
-    ifs.ignore();
     ifs >> maxValue;
     ifs.ignore();
     size_t curPos = ifs.tellg();
@@ -103,13 +95,9 @@ PortableAnymap* PortableAnymapFactroy::createP5(const MyString& filename, std::i
         return new PortableGrayMap(filename, height, width, std::move(image), true, maxValue);
     }
 }
-PortableAnymap* PortableAnymapFactroy::createP6(const MyString& filename, std::ifstream& ifs)
+PortableAnymap* PortableAnymapFactroy::createP6(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
 {
-    size_t height, width;
     unsigned short int maxValue;
-    ifs >> width;
-    ifs >> height;
-    ifs.ignore();
     ifs >> maxValue;
     ifs.ignore();
     size_t curPos = ifs.tellg();
@@ -160,13 +148,8 @@ PortableAnymap* PortableAnymapFactroy::createP6(const MyString& filename, std::i
 }
 
 
-PortableAnymap* PortableAnymapFactroy::createP1(const MyString& filename, std::ifstream& ifs)
+PortableAnymap* PortableAnymapFactroy::createP1(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
 {
-    size_t height, width;
-    ifs.ignore();
-    ifs >> width;
-    ifs >> height;
-    ifs.ignore();
     MyVector<MyVector<bool>> image;
     for (int i = 0; i < height; ++i) {
         MyVector<bool> curRow;
@@ -179,14 +162,9 @@ PortableAnymap* PortableAnymapFactroy::createP1(const MyString& filename, std::i
     }
     return new PortableBitmap(filename, height, width, std::move(image),false);
 }
-PortableAnymap* PortableAnymapFactroy::createP2(const MyString& filename, std::ifstream& ifs)
+PortableAnymap* PortableAnymapFactroy::createP2(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
 {
-    size_t height, width;
     unsigned short int maxValue;
-    ifs.ignore();
-    ifs >> width;
-    ifs >> height;
-    ifs.ignore();
     ifs >> maxValue;
     ifs.ignore();
     MyVector<MyVector<unsigned short int>> image;
@@ -202,14 +180,9 @@ PortableAnymap* PortableAnymapFactroy::createP2(const MyString& filename, std::i
     return new PortableGrayMap(filename, height, width, std::move(image), false, maxValue);
 
 }
-PortableAnymap* PortableAnymapFactroy::createP3(const MyString& filename, std::ifstream& ifs)
+PortableAnymap* PortableAnymapFactroy::createP3(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
 {
-    size_t height, width;
     unsigned short int maxValue;
-    ifs.ignore();
-    ifs >> width;
-    ifs >> height;
-    ifs.ignore();
     ifs >> maxValue;
     ifs.ignore();
     MyVector<MyVector<Triple<unsigned short int>>> image;
@@ -238,25 +211,45 @@ PortableAnymap *PortableAnymapFactroy::create(const MyString& filename) {
     if (!ifs.is_open()) {
         throw std::exception("File couldn't be oppened!");
     }
+    MyVector<MyString> comments;
     MyString str;
     ifs >> str;
-    
+    ifs.ignore();
+    char curCom[64];
+    while (true) {  
+        ifs.getline(curCom,64);
+        if (curCom[0] == '#') {
+            comments.addItem(curCom);
+        }
+        else {
+            break;
+        }
+    }
+    size_t height, width;
+    std::stringstream ss(curCom);
+    ss >> width;
+    ss >> height;
+
+    for (size_t i = 0; i < comments.getSize(); i++)
+    {
+        std::cout << comments[i];
+    }
     PortableAnymap* map = nullptr;
     if(strcmp(str.c_str(), "P1") == 0) {
-        map = createP1(filename, ifs);
+        map = createP1(filename, ifs,height,width);
     }else if (strcmp(str.c_str(), "P2") == 0) {
-        map = createP2(filename, ifs);
+        map = createP2(filename, ifs, height, width);
     }
     else if (strcmp(str.c_str(), "P3") == 0) {
-        map = createP3(filename, ifs);
+        map = createP3(filename, ifs, height, width);
     }
     else if (strcmp(str.c_str(), "P4") == 0) {
-        map = createP4(filename, ifs);
+        map = createP4(filename, ifs, height, width);
     }else if (strcmp(str.c_str(), "P5") == 0) {
-        map = createP5(filename, ifs);
+        map = createP5(filename, ifs, height, width);
     }
     else if (strcmp(str.c_str(), "P6") == 0) {
-        map = createP6(filename, ifs);
+        map = createP6(filename, ifs, height, width);
     }
     return map;
 }
