@@ -108,8 +108,8 @@ PortableAnymap* PortablePixMap::clone() const
 
 }
 
-static unsigned short int getGrayScalePixelValue(unsigned short int red, unsigned short int blue, unsigned short int green) {
-	return 0.299 * red + 0.587 * red + 0.114 * blue;
+static unsigned short int getGrayScalePixelValue(unsigned short int red, unsigned short int green, unsigned short int blue) {
+	return 0.299 * red + 0.587 * green + 0.114 * blue;
 }
 void PortablePixMap::grayscale()
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 
+
 template <typename T>
 class MyVector
 {
@@ -25,6 +26,7 @@ public:
     unsigned getCapacity() const;
 
     void addItem(const T&);
+    void addItem(T&&);
     void removeItem(unsigned);
 
     const T& getItemAtIndex(unsigned) const;
@@ -52,7 +54,7 @@ MyVector<T>::MyVector(MyVector<T>&& other)
 {
     vector = other.vector;
     capacity = other.capacity;
-    size = other.capacity;
+    size = other.size;
 
     other.vector = nullptr;
     other.size = 0;
@@ -115,7 +117,7 @@ MyVector<T>& MyVector<T>::operator=(MyVector<T>&& other)
 
         vector = other.vector;
         capacity = other.capacity;
-        size = other.capacity;
+        size = other.size;
 
         other.vector = nullptr;
         other.size = 0;
@@ -143,6 +145,15 @@ void MyVector<T>::addItem(const T& item)
         resize();
 
     vector[getSize()] = item;
+    ++size;
+}
+template <typename T>
+void MyVector<T>::addItem( T&& item)
+{
+    if (getSize() == getCapacity())
+        resize();
+
+    vector[getSize()] = std::move(item);
     ++size;
 }
 
@@ -178,3 +189,5 @@ T& MyVector<T>::operator[](unsigned index)
 {
     return takeItemAtIndex(index);
 }
+
+

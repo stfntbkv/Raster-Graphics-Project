@@ -1,8 +1,26 @@
 #include "SessionManager.h"
 
+SessionManager::SessionManager()
+{
+}
+
+SessionManager::SessionManager(MyVector<Polymorphic_Ptr<PortableAnymap>>&& images) : images(std::move(images))
+{
+    id = nextId++;
+}
+SessionManager::SessionManager(const MyVector<Polymorphic_Ptr<PortableAnymap>>& images) : images(images)
+{
+    id = nextId++;
+}
+
 void SessionManager::add(PortableAnymap* image)
 {
     images.addItem(image);
+}
+
+void SessionManager::addCommand(Command* command)
+{
+    commands.push(command);
 }
 
 Polymorphic_Ptr<PortableAnymap>& SessionManager::operator[](size_t index)
@@ -20,8 +38,23 @@ void SessionManager::sessionInfo() const
 
 }
 
-void SessionManager::save() const
+int SessionManager::getSize() const
 {
+    return images.getSize();
+}
+
+int SessionManager::getId() const
+{
+    return id;
+}
+
+void SessionManager::save() 
+{
+    while (!commands.isEmpty()) {
+        Polymorphic_Ptr<Command> temp = commands.peek();
+        temp->execute();
+        commands.pop();
+    }
     for (size_t i = 0; i < images.getSize(); i++)
     {
         images[i]->save();

@@ -1,17 +1,84 @@
 #include "PortableAnymapFactory.h"
+#include "SessionManager.h"
+#include "PolymorphicPointer.hpp"
+#include "Command.h"
+#include "MonochromeCommand.h"
+#include "GrayScaleCommand.h"
 #include <iostream>
+#include <sstream>
+int SessionManager::nextId = 1;
+void run() {
+	MyString command;
+	std::cin >> command;
+	MyVector<SessionManager> sessions;
+	int activeSessionIndex = 0;
+	while (true) {
 
+		if (strcmp(command.c_str(), "load") == 0) {
+			std::cin.ignore();
+			char buff[128];
+			std::cin.getline(buff, 128);
+			std::stringstream ss(buff);
+			char filename[128];
+			MyVector<MyString> filenames;
+			while (!ss.eof()) {
+				ss.getline(filename, 128, ' ');
+				filenames.addItem(filename);
+			}
+			MyVector<Polymorphic_Ptr<PortableAnymap>> curImages;
+			for (size_t i = 0; i < filenames.getSize(); i++)
+			{
+				PortableAnymap* map = PortableAnymapFactroy::create(filenames[i].c_str());
+				map->print();
+				curImages.addItem(map);
+			}
+			SessionManager curSession(std::move(curImages));
+			activeSessionIndex = curSession.getId();
+			sessions.addItem(std::move(curSession));
+
+		}
+		else if(strcmp(command.c_str(), "grayscale") == 0) {
+			Command* command = new GrayScaleCommand(sessions[activeSessionIndex-1].images);
+			sessions[activeSessionIndex - 1].addCommand(command);
+
+		}
+		else if (strcmp(command.c_str(), "save") == 0) {
+			sessions[activeSessionIndex - 1].save();
+		}
+		else if (strcmp(command.c_str(), "exit") == 0) {
+			for (size_t i = 0; i < sessions.getSize(); i++)
+			{
+				std::cout << sessions[i].getId() << std::endl;
+
+				for (size_t j = 0; j < sessions[i].getSize(); j++)
+				{
+					sessions[i][j]->print();
+					std::cout << std::endl;
+				}
+			}
+			break;
+		}
+		else {
+			std::cout << "Invalid Command" << std::endl;
+			
+		}
+		std::cin >> command;
+	}
+
+
+
+
+}
 int main()
 {
+	run();
 	//PortableAnymap* map = PortableAnymapFactroy::create("imagePPM.ppm");
 	//map->print();
 
 
-	PortableAnymap* mapBinaryPpm = PortableAnymapFactroy::create("imagePPMbinary.ppm");
-	mapBinaryPpm->print();
-	mapBinaryPpm->negative();
-	std::cout << std::endl;
-	mapBinaryPpm->print();
+	//PortableAnymap* mapBinaryPpm = PortableAnymapFactroy::create("imagePPMbinary.ppm");
+	//mapBinaryPpm->print();
+	
 	/*PortableAnymap* mapBinaryPgm = PortableAnymapFactroy::create("imagePGMbinary.pgm");
 	mapBinaryPgm->print();*/
 	/*std::cout << std::endl;
