@@ -45,18 +45,18 @@ void run() {
 		else if (strcmp(command.c_str(), "save") == 0) {
 			sessions[activeSessionIndex - 1].save();
 		}
+		else if (strcmp(command.c_str(), "undo") == 0) {
+			
+			sessions[activeSessionIndex - 1].undo();
+		}else if (strcmp(command.c_str(), "monochrome") == 0) {
+			Command* command = new MonochromeCommand(sessions[activeSessionIndex - 1].images);
+			sessions[activeSessionIndex - 1].addCommand(command);
+		}
 		else if (strcmp(command.c_str(), "exit") == 0) {
-			for (size_t i = 0; i < sessions.getSize(); i++)
+			for (size_t i = 0; i < sessions[activeSessionIndex-1].getSize(); i++)
 			{
-				std::cout << sessions[i].getId() << std::endl;
-
-				for (size_t j = 0; j < sessions[i].getSize(); j++)
-				{
-					sessions[i][j]->print();
-					std::cout << std::endl;
-				}
+				sessions[activeSessionIndex - 1][i]->print();
 			}
-			break;
 		}
 		else {
 			std::cout << "Invalid Command" << std::endl;

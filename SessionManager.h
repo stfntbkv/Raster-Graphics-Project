@@ -28,6 +28,7 @@ public:
 	int getSize() const;
 	int getId() const;
 	void save();
+	void undo();
 	void saveas(const MyString* fileName) const;
 };
 

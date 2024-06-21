@@ -53,10 +53,21 @@ void SessionManager::save()
     while (!commands.isEmpty()) {
         Polymorphic_Ptr<Command> temp = commands.peek();
         temp->execute();
+        history.push(std::move(temp));
         commands.pop();
     }
     for (size_t i = 0; i < images.getSize(); i++)
     {
         images[i]->save();
+    }
+}
+
+void SessionManager::undo()
+{
+    if (!history.isEmpty()) {
+        Polymorphic_Ptr<Command> temp = history.peek();
+        temp->undo();
+
+        history.pop();
     }
 }

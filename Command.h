@@ -2,6 +2,7 @@
 #include "MyString.h"
 #include "PortableAnymap.h"
 #include "PolymorphicPointer.hpp"
+
 class Command{
 protected:
     MyVector<Polymorphic_Ptr<PortableAnymap>>& images;
