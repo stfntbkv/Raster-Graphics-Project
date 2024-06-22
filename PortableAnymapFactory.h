@@ -13,10 +13,10 @@ public:
     PortableAnymapFactroy() = default;
     static PortableAnymap* create(const MyString& filename);
 private:
-    static PortableAnymap* createP1(const MyString& filename,std::ifstream& ifs, size_t height,size_t width);
-    static PortableAnymap* createP2(const MyString& filename,std::ifstream& ifs, size_t height, size_t width);
-    static PortableAnymap* createP3(const MyString& filename,std::ifstream& ifs, size_t height, size_t width);
-    static PortableAnymap* createP4(const MyString& filename,std::ifstream& ifs, size_t height, size_t width);
-    static PortableAnymap* createP5(const MyString& filename,std::ifstream& ifs, size_t height, size_t width);
-    static PortableAnymap* createP6(const MyString& filename,std::ifstream& ifs, size_t height, size_t width);
+    static PortableAnymap* createP1(const MyString& filename,std::ifstream& ifs, size_t height,size_t width, const MyVector<MyString>& comments);
+    static PortableAnymap* createP2(const MyString& filename,std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments);
+    static PortableAnymap* createP3(const MyString& filename,std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments);
+    static PortableAnymap* createP4(const MyString& filename,std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments);
+    static PortableAnymap* createP5(const MyString& filename,std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments);
+    static PortableAnymap* createP6(const MyString& filename,std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments);
 };

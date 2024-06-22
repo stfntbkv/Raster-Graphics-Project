@@ -5,6 +5,10 @@ PortableGrayMap::PortableGrayMap(const MyString& filename, size_t height, size_t
 	PortableAnymap(filename,height,width),image(std::move(image)), isBinary(isBinary), maxValue(maxValue)
 {
 }
+PortableGrayMap::PortableGrayMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<unsigned short int>>&& image, bool isBinary, unsigned short int maxValue, const MyVector<MyString>& comments)
+	: PortableAnymap(filename, height, width,comments), image(std::move(image)), isBinary(isBinary), maxValue(maxValue)
+{
+}
 static void printBinaryRepresentation(const char* data, size_t dataSize) {
 	for (size_t i = 0; i < dataSize; ++i) {
 		unsigned char byte = static_cast<unsigned char>(data[i]);
@@ -28,7 +32,7 @@ void PortableGrayMap::print() const
 	}
 }
 
-void PortableGrayMap::save() const
+void PortableGrayMap::save(const MyString& fileName) const
 {
 	if (isBinary) {
 		std::ofstream ofs(fileName.c_str());
@@ -36,12 +40,17 @@ void PortableGrayMap::save() const
 			throw std::exception("Couldn't open file");
 		}
 		ofs << "P5\n";
+		for (size_t i = 0; i < comments.getSize(); i++)
+		{
+			ofs << comments[i] << std::endl;
+		}
 		ofs << width << " " << height << "\n";
 		ofs << maxValue << '\n';
+
 		int curPos = ofs.tellp();
 		ofs.close();
 
-		std::ofstream ofsBinary(fileName.c_str(), std::ios::binary | std::ios::in | std::ios::out);
+		std::ofstream ofsBinary(fileName.c_str(), std::ios::binary | std::ios::in);
 		if (!ofsBinary.is_open()) {
 			throw std::exception("Couldn't open file");
 		}
@@ -65,7 +74,7 @@ void PortableGrayMap::save() const
 			delete[] data;
 		}
 		else {
-			char* data = new char[dataSize];
+			unsigned char* data = new unsigned char[dataSize];
 			int index = 0;
 			for (size_t i = 0; i < height; i++)
 			{
@@ -87,14 +96,18 @@ void PortableGrayMap::save() const
 			throw std::exception("Couldn't open file");
 		}
 		ofs << "P2\n";
+		for (size_t i = 0; i < comments.getSize(); i++)
+		{
+			ofs << comments[i] << std::endl;
+		}
 		ofs << width << " " << height << '\n';
 		ofs << maxValue << '\n';
-		unsigned short int maxWidth = (std::floor(std::log10(maxValue) + 1));
+		/*unsigned short int maxWidth = (std::floor(std::log10(maxValue) + 1));*/
 		for (size_t i = 0; i < height; i++)
 		{
 			for (size_t j = 0; j < width; j++)
-			{
-				ofs << std::setw(maxWidth) << image[i][j];
+			{ 
+				ofs  << image[i][j];
 				if (j != width - 1) {
 					ofs << " ";
 				}

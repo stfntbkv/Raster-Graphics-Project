@@ -10,8 +10,9 @@ class PortableBitmap: public PortableAnymap{
     MyVector<MyVector<bool>> image;
 public:
     PortableBitmap(const MyString& filename, size_t height,size_t width,MyVector<MyVector<bool>>&& image,bool isBinary);
+    PortableBitmap(const MyString& filename, size_t height,size_t width,MyVector<MyVector<bool>>&& image,bool isBinary,const MyVector<MyString>& comments);
     void print() const override;
-    void save() const override;
+    void save(const MyString& fileName) const override;
     PortableAnymap* clone() const override;
     void grayscale() override;
     void monochrome() override;

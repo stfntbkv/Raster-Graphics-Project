@@ -13,7 +13,7 @@ void printBinaryRepresentation(const unsigned char* data, size_t dataSize) {
     }
     std::cout << std::endl;
 }
-PortableAnymap *PortableAnymapFactroy::createP4(const MyString& filename,std::ifstream& ifs, size_t height, size_t width) {
+PortableAnymap *PortableAnymapFactroy::createP4(const MyString& filename,std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments) {
     size_t curPos = ifs.tellg();
     ifs.close();
     std::ifstream ifsBinary(filename.c_str(), std::ios::binary);
@@ -47,11 +47,11 @@ PortableAnymap *PortableAnymapFactroy::createP4(const MyString& filename,std::if
         image.addItem(curRow);
     }
     delete[] arr;
-    return new PortableBitmap(filename, height, width,std::move(image),true);
+    return new PortableBitmap(filename, height, width,std::move(image),true,comments);
 
 
 }
-PortableAnymap* PortableAnymapFactroy::createP5(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
+PortableAnymap* PortableAnymapFactroy::createP5(const MyString& filename, std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments)
 {
     unsigned short int maxValue;
     ifs >> maxValue;
@@ -71,12 +71,11 @@ PortableAnymap* PortableAnymapFactroy::createP5(const MyString& filename, std::i
             MyVector<unsigned short int> curRow;
             for (size_t j = 0; j < width; j++)
             {
-               
                 curRow.addItem(data[dataIndex++]);
             }
             image.addItem(std::move(curRow));
         }
-        return new PortableGrayMap(filename, height, width, std::move(image), true, maxValue);
+        return new PortableGrayMap(filename, height, width, std::move(image), true, maxValue,comments);
     }
     else {
         unsigned short int* data = new unsigned short int[height * width];
@@ -95,7 +94,7 @@ PortableAnymap* PortableAnymapFactroy::createP5(const MyString& filename, std::i
         return new PortableGrayMap(filename, height, width, std::move(image), true, maxValue);
     }
 }
-PortableAnymap* PortableAnymapFactroy::createP6(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
+PortableAnymap* PortableAnymapFactroy::createP6(const MyString& filename, std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments)
 {
     unsigned short int maxValue;
     ifs >> maxValue;
@@ -124,7 +123,7 @@ PortableAnymap* PortableAnymapFactroy::createP6(const MyString& filename, std::i
             }
             image.addItem(std::move(curRow));
         }
-        return new PortablePixMap(filename, height, width, std::move(image), true, maxValue);
+        return new PortablePixMap(filename, height, width, std::move(image), true, maxValue,comments);
     }
     else {
         unsigned short int * data = new unsigned short int[dataSize];
@@ -146,9 +145,7 @@ PortableAnymap* PortableAnymapFactroy::createP6(const MyString& filename, std::i
 
 
 }
-
-
-PortableAnymap* PortableAnymapFactroy::createP1(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
+PortableAnymap* PortableAnymapFactroy::createP1(const MyString& filename, std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments)
 {
     MyVector<MyVector<bool>> image;
     for (int i = 0; i < height; ++i) {
@@ -160,9 +157,9 @@ PortableAnymap* PortableAnymapFactroy::createP1(const MyString& filename, std::i
         }
         image.addItem(std::move(curRow));
     }
-    return new PortableBitmap(filename, height, width, std::move(image),false);
+    return new PortableBitmap(filename, height, width, std::move(image),false,comments);
 }
-PortableAnymap* PortableAnymapFactroy::createP2(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
+PortableAnymap* PortableAnymapFactroy::createP2(const MyString& filename, std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments)
 {
     unsigned short int maxValue;
     ifs >> maxValue;
@@ -177,10 +174,10 @@ PortableAnymap* PortableAnymapFactroy::createP2(const MyString& filename, std::i
         }
         image.addItem(std::move(curRow));
     }
-    return new PortableGrayMap(filename, height, width, std::move(image), false, maxValue);
+    return new PortableGrayMap(filename, height, width, std::move(image), false, maxValue,comments);
 
 }
-PortableAnymap* PortableAnymapFactroy::createP3(const MyString& filename, std::ifstream& ifs, size_t height, size_t width)
+PortableAnymap* PortableAnymapFactroy::createP3(const MyString& filename, std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments)
 {
     unsigned short int maxValue;
     ifs >> maxValue;
@@ -202,9 +199,8 @@ PortableAnymap* PortableAnymapFactroy::createP3(const MyString& filename, std::i
         }
         image.addItem(std::move(curRow));
     }
-    return new PortablePixMap(filename, height, width, std::move(image), false, maxValue);
+    return new PortablePixMap(filename, height, width, std::move(image), false, maxValue,comments);
 }
-
 
 PortableAnymap *PortableAnymapFactroy::create(const MyString& filename) {
     std::ifstream ifs(filename.c_str());
@@ -230,26 +226,22 @@ PortableAnymap *PortableAnymapFactroy::create(const MyString& filename) {
     ss >> width;
     ss >> height;
 
-    for (size_t i = 0; i < comments.getSize(); i++)
-    {
-        std::cout << comments[i];
-    }
     PortableAnymap* map = nullptr;
     if(strcmp(str.c_str(), "P1") == 0) {
-        map = createP1(filename, ifs,height,width);
+        map = createP1(filename, ifs,height,width,comments);
     }else if (strcmp(str.c_str(), "P2") == 0) {
-        map = createP2(filename, ifs, height, width);
+        map = createP2(filename, ifs, height, width, comments);
     }
     else if (strcmp(str.c_str(), "P3") == 0) {
-        map = createP3(filename, ifs, height, width);
+        map = createP3(filename, ifs, height, width, comments);
     }
     else if (strcmp(str.c_str(), "P4") == 0) {
-        map = createP4(filename, ifs, height, width);
+        map = createP4(filename, ifs, height, width, comments);
     }else if (strcmp(str.c_str(), "P5") == 0) {
-        map = createP5(filename, ifs, height, width);
+        map = createP5(filename, ifs, height, width, comments);
     }
     else if (strcmp(str.c_str(), "P6") == 0) {
-        map = createP6(filename, ifs, height, width);
+        map = createP6(filename, ifs, height, width, comments);
     }
     return map;
 }

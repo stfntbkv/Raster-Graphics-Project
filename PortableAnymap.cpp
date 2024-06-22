@@ -10,3 +10,13 @@ PortableAnymap::PortableAnymap(const MyString& fileName, size_t height, size_t w
 {
 
 }
+
+PortableAnymap::PortableAnymap(const MyString& fileName, size_t height, size_t width, const MyVector<MyString>& comments) :
+	fileName(fileName),height(height),width(width),comments(comments)
+{
+}
+
+const MyString& PortableAnymap::getFileName() const
+{
+	return fileName;
+}

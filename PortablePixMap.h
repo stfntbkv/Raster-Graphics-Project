@@ -9,8 +9,10 @@ class PortablePixMap : public PortableAnymap
 public:
 	PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image,
 		bool isBinary, short unsigned int maxValue);
+	PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image,
+		bool isBinary, short unsigned int maxValue,const MyVector<MyString>& comments);
 	void print() const override;
-	void save() const override;
+	void save(const MyString& fileName) const override;
 	PortableAnymap* clone() const override;
 	void grayscale() override;
 	void monochrome() override;

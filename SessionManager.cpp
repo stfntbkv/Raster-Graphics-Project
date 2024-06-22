@@ -21,6 +21,12 @@ void SessionManager::add(PortableAnymap* image)
 void SessionManager::addCommand(Command* command)
 {
     commands.push(command);
+    remainingTransformationsCount++;
+}
+
+void SessionManager::addTransformation(MyString&& transformation)
+{
+    remainingTransformations.addItem(transformation);
 }
 
 Polymorphic_Ptr<PortableAnymap>& SessionManager::operator[](size_t index)
@@ -35,7 +41,18 @@ const Polymorphic_Ptr<PortableAnymap>& SessionManager::operator[](size_t index) 
 
 void SessionManager::sessionInfo() const
 {
-
+    std::cout << std::endl;
+    std::cout << "Session ID: " << id << std::endl;
+    std::cout << "Loaded images in session: ";
+    for (size_t i = 0; i < getSize(); i++)
+    {
+        std::cout << images[i]->getFileName() << std::endl;
+    }
+    std::cout << "Remaining transformations in session: ";
+    for (size_t i = 0; i < remainingTransformationsCount; i++)
+    {
+        std::cout << remainingTransformations[i]<<std::endl;
+    }
 }
 
 int SessionManager::getSize() const
@@ -54,11 +71,13 @@ void SessionManager::save()
         Polymorphic_Ptr<Command> temp = commands.peek();
         temp->execute();
         history.push(std::move(temp));
-        commands.pop();
+        commands.pop();   
     }
+    remainingTransformations = MyVector<MyString>();
     for (size_t i = 0; i < images.getSize(); i++)
     {
-        images[i]->save();
+        
+        images[i]->save(images[i]->getFileName());
     }
 }
 
@@ -70,4 +89,9 @@ void SessionManager::undo()
 
         history.pop();
     }
+}
+
+void SessionManager::saveas(const MyString& fileName) const
+{
+    images[0]->save(fileName);
 }

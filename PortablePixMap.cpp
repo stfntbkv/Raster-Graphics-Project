@@ -6,10 +6,17 @@ PortablePixMap::PortablePixMap(const MyString& filename, size_t height, size_t w
 	PortableAnymap(filename,height,width),image(std::move(image)),isBinary(isBinary),maxValue(maxValue)
 {
 }
+PortablePixMap::PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image, bool isBinary, short unsigned int maxValue, const MyVector<MyString>& comments) :
+	PortableAnymap(filename, height, width,comments), image(std::move(image)), isBinary(isBinary), maxValue(maxValue)
+{
+}
 void PortablePixMap::print() const
 {
 	unsigned short int maxWidth = (std::floor(std::log10(maxValue) + 1));
-
+	for (size_t i = 0; i < comments.getSize(); i++)
+	{
+		std::cout << comments[i] << std::endl;
+	}
 	for (size_t i = 0; i < height; i++)
 	{
 		for (size_t j = 0; j < width; j++)
@@ -31,7 +38,7 @@ static void printBinaryRepresentation(const unsigned char* data, size_t dataSize
 	}
 	std::cout << std::endl;
 }
-void PortablePixMap::save() const
+void PortablePixMap::save(const MyString& fileName) const
 {
 	if (isBinary) {
 		std::ofstream ofs(fileName.c_str());
@@ -39,6 +46,10 @@ void PortablePixMap::save() const
 			throw std::exception("Couldn't open file");
 		}
 		ofs << "P6\n";
+		for (size_t i = 0; i < comments.getSize(); i++)
+		{
+			ofs << comments[i] << std::endl;
+		}
 		ofs << width << " " << height << "\n";
 		ofs << maxValue << '\n';
 		int curPos = ofs.tellp();
@@ -68,14 +79,15 @@ void PortablePixMap::save() const
 		}
 		else {
 			unsigned char* data = new unsigned char[dataSize];
+			
 			int index = 0;
 			for (size_t i = 0; i < height; i++)
 			{
 				for (size_t j = 0; j < width; j++)
 				{
-					data[index++] = image[i][j].getFirst();
-					data[index++] = image[i][j].getSecond();
-					data[index++] = image[i][j].getThird();
+					data[index++] = (image[i][j].getFirst());
+					data[index++] = (image[i][j].getSecond());
+					data[index++] = (image[i][j].getThird());
 				}
 			}
 			ofsBinary.write((const char*)data,dataSize);
@@ -86,6 +98,10 @@ void PortablePixMap::save() const
 	else {
 		std::ofstream ofs(fileName.c_str());
 		ofs << "P3\n";
+		for (size_t i = 0; i < comments.getSize(); i++)
+		{
+			ofs << comments[i] << std::endl;
+		}
 		ofs << width << " " << height << '\n';
 		ofs << maxValue << '\n';
 		for (size_t i = 0; i < height; i++)

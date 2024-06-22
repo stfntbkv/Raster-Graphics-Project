@@ -5,6 +5,10 @@ PortableBitmap::PortableBitmap(const MyString& filename, size_t height, size_t w
 	:PortableAnymap(filename, height,width),image(std::move(image)), isBinary(isBinary)
 {
 }
+PortableBitmap::PortableBitmap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<bool>>&& image, bool isBinary, const MyVector<MyString>& comments)
+	: PortableAnymap(filename, height, width,comments), image(std::move(image)), isBinary(isBinary)
+{
+}
 static void printBinaryRepresentation(const char* data, size_t dataSize) {
 	for (size_t i = 0; i < dataSize; ++i) {
 		unsigned char byte = static_cast<unsigned char>(data[i]);
@@ -29,7 +33,7 @@ void PortableBitmap::print() const
 	}
 }
 
-void PortableBitmap::save() const
+void PortableBitmap::save(const MyString& fileName) const
 {
 	if (isBinary) {
 		std::ofstream ofs(fileName.c_str());
@@ -37,6 +41,10 @@ void PortableBitmap::save() const
 			throw std::exception("Couldn't open file");
 		}
 		ofs << "P4\n";
+		for (size_t i = 0; i < comments.getSize(); i++)
+		{
+			ofs << comments[i] << std::endl;
+		}
 		ofs << width << " " << height << "\n";
 		int curPos = ofs.tellp();
 		ofs.close();
@@ -79,6 +87,11 @@ void PortableBitmap::save() const
 			throw std::exception("Couldn't open file");
 		}
 		ofs << "P1\n";
+		for (size_t i = 0; i < comments.getSize(); i++)
+		{
+			ofs << comments[i] << std::endl;
+		}
+		
 		ofs << width << " " << height << '\n';
 		for (size_t i = 0; i < height; i++)
 		{
