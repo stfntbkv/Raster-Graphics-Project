@@ -15,6 +15,10 @@ void MonochromeCommand::execute()
 		images[i]->monochrome();
 	}
 }
+void MonochromeCommand::execute(Polymorphic_Ptr<PortableAnymap>& image)
+{
+	image->monochrome();
+}
 void MonochromeCommand::undo() {
 	if (snapshot) {
 		for (size_t i = 0; i < snapshot->getSize(); i++)

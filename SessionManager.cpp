@@ -93,5 +93,22 @@ void SessionManager::undo()
 
 void SessionManager::saveas(const MyString& fileName) const
 {
-    images[0]->save(fileName);
+    if (!commands.isEmpty()) {
+        MyQueue<Polymorphic_Ptr<Command>> commandsCopy = MyQueue<Polymorphic_Ptr<Command>>(commands);
+        Polymorphic_Ptr<PortableAnymap> firstImage = Polymorphic_Ptr<PortableAnymap>(images[0]);
+        while (!commandsCopy.isEmpty()) {
+            Polymorphic_Ptr<Command> temp = commandsCopy.peek();
+            temp->execute(firstImage);
+            commandsCopy.pop();
+        }
+        firstImage->save(fileName);
+    }
+    else {
+        images[0]->save(fileName);
+    }
+    
+
+    
+   
+    
 }

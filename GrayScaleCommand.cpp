@@ -15,6 +15,11 @@ void GrayScaleCommand::execute()
 		images[i]->grayscale();
 	}
 }
+
+void GrayScaleCommand::execute(Polymorphic_Ptr<PortableAnymap>& image)
+{
+	image->grayscale();
+}
 void GrayScaleCommand::undo() {
 	if (snapshot) {
 		for (size_t i = 0; i < snapshot->getSize(); i++)

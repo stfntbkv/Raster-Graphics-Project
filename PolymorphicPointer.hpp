@@ -37,7 +37,12 @@ public:
 template<class T>
 void Polymorphic_Ptr<T>::copyFrom(const Polymorphic_Ptr<T>& other)
 {
-	data = other.data->clone();
+	if (other.data == nullptr) {
+		data = nullptr;
+	}
+	else {
+		data = other.data->clone();
+	}
 }
 
 template<class T>

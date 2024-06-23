@@ -17,6 +17,11 @@ void NegativeCommand::execute()
 	}
 }
 
+void NegativeCommand::execute(Polymorphic_Ptr<PortableAnymap>& image)
+{
+	image->negative();
+}
+
 void NegativeCommand::undo()
 {
 	if (snapshot) {

@@ -31,6 +31,11 @@ void RotateCommand::undo()
 	snapshot = nullptr;
 }
 
+void RotateCommand::execute(Polymorphic_Ptr<PortableAnymap>& image)
+{
+	image->rotate(direction);
+}
+
 Command* RotateCommand::clone() const
 {
 	return new RotateCommand(*this);

@@ -108,6 +108,11 @@ void run() {
 			int sesIndex;
 			std::cin >> sesIndex;
 			activeSessionIndex = sesIndex;
+		}else if (strcmp(command.c_str(), "saveas") == 0) {
+			std::cin.ignore();
+			MyString str;
+			std::cin >> str;
+			sessions[activeSessionIndex - 1].saveas(str);
 		}
 		else {
 			std::cout << "Invalid Command" << std::endl;
