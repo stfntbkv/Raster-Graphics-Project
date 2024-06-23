@@ -1,10 +1,75 @@
 #include "PortableBitmap.h"
+#include "PortableAnymapFactory.h"
 
+void PortableBitmap::makeBitmapCollage(const PortableAnymap& other, const MyString& newFileName, const MyString& direction) const
+{
+	const PortableBitmap& otherImage = dynamic_cast<const PortableBitmap&>(other);
+	if (strcmp(direction.c_str(), "vertical") ==0 ) {
+		
+		int newHeight = height + other.getHeight();
+		MyVector<MyVector<bool>> newImage;
+		for (size_t i = 0; i < height; i++)
+		{
+			MyVector<bool> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(image[i][j]);
+			}
+			newImage.addItem(std::move(curRow));
+		}
+		for (size_t i = 0; i < other.getHeight(); i++)
+		{
+			MyVector<bool> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(otherImage.image[i][j]);
+			}
+			newImage.addItem(std::move(curRow));
+		}
+		PortableAnymap* curImage = new PortableBitmap(newFileName, newHeight, width, std::move(newImage), isBinary);
+		curImage->save(newFileName);
+	}
+	else if(strcmp(direction.c_str(), "horizontal") == 0) {
+		int newWidth = width + other.getWidth();
+		MyVector<MyVector<bool>> newImage;
+		for (size_t i = 0; i < height; i++)
+		{
+			MyVector<bool> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(image[i][j]);
+			}
+			for (size_t j = 0; j < other.getWidth(); j++)
+			{
+				curRow.addItem(otherImage.image[i][j]);
+			}
+			newImage.addItem(curRow);
+		}
+		PortableBitmap* curImage = new PortableBitmap(newFileName, height, newWidth, std::move(newImage), isBinary);
+		curImage->save(newFileName);
+	}
+}
+
+void PortableBitmap::makeGraymapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	throw std::logic_error("The types of the images are not the same");
+}
+
+void PortableBitmap::makePixmapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	throw std::logic_error("The types of the images are not the same");
+}
+
+void PortableBitmap::makeCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	other.makeBitmapCollage(*this,fileName,direction);
+}
 
 PortableBitmap::PortableBitmap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<bool>> &&image,bool isBinary)
 	:PortableAnymap(filename, height,width),image(std::move(image)), isBinary(isBinary)
 {
 }
+
 PortableBitmap::PortableBitmap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<bool>>&& image, bool isBinary, const MyVector<MyString>& comments)
 	: PortableAnymap(filename, height, width,comments), image(std::move(image)), isBinary(isBinary)
 {
@@ -115,6 +180,7 @@ PortableAnymap* PortableBitmap::clone() const
 	return new PortableBitmap(*this);
 }
 
+
 void PortableBitmap::grayscale()
 {
 
@@ -134,6 +200,7 @@ void PortableBitmap::negative()
 		}
 	}
 }
+
 
 void PortableBitmap::rotate(const MyString& direction)
 {

@@ -20,3 +20,13 @@ const MyString& PortableAnymap::getFileName() const
 {
 	return fileName;
 }
+
+size_t PortableAnymap::getHeight() const
+{
+	return height;
+}
+
+size_t PortableAnymap::getWidth() const
+{
+	return width;
+}

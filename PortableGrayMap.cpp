@@ -1,6 +1,62 @@
 #include "PortableGrayMap.h"
 #include <fstream>
 #include <iomanip>
+void PortableGrayMap::makeBitmapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	throw std::logic_error("Invalid images types");
+}
+void PortableGrayMap::makeGraymapCollage(const PortableAnymap& other, const MyString& newFileName, const MyString& direction) const
+{
+	const PortableGrayMap& otherImage = dynamic_cast<const PortableGrayMap&>(other);
+	if (strcmp(direction.c_str(), "vertical") == 0) {
+
+		int newHeight = height + other.getHeight();
+		MyVector<MyVector<unsigned short int>> newImage;
+		for (size_t i = 0; i < height; i++)
+		{
+			MyVector<unsigned short int> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(image[i][j]);
+			}
+			newImage.addItem(std::move(curRow));
+		}
+		for (size_t i = 0; i < other.getHeight(); i++)
+		{
+			MyVector<unsigned short int> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(otherImage.image[i][j]);
+			}
+			newImage.addItem(std::move(curRow));
+		}
+		PortableAnymap* curImage = new PortableGrayMap(newFileName, newHeight,width, std::move(newImage), isBinary, maxValue);
+		curImage->save(newFileName);
+	}
+	else if (strcmp(direction.c_str(), "horizontal") == 0) {
+		int newWidth = width + other.getWidth();
+		MyVector<MyVector<unsigned short int >> newImage;
+		for (size_t i = 0; i < height; i++)
+		{
+			MyVector<unsigned short int > curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(image[i][j]);
+			}
+			for (size_t j = 0; j < other.getWidth(); j++)
+			{
+				curRow.addItem(otherImage.image[i][j]);
+			}
+			newImage.addItem(curRow);
+		}
+		PortableAnymap* curImage = new PortableGrayMap(newFileName, height, newWidth, std::move(newImage), isBinary,maxValue);
+		curImage->save(newFileName);
+	}
+}
+void PortableGrayMap::makePixmapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	throw std::logic_error("Invalid images types");
+}
 PortableGrayMap::PortableGrayMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<unsigned short int>>&& image, bool isBinary, unsigned short int maxValue) :
 	PortableAnymap(filename,height,width),image(std::move(image)), isBinary(isBinary), maxValue(maxValue)
 {
@@ -30,6 +86,11 @@ void PortableGrayMap::print() const
 		}
 		std::cout << std::endl;
 	}
+}
+
+void PortableGrayMap::makeCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	other.makeGraymapCollage(*this,fileName,direction);
 }
 
 void PortableGrayMap::save(const MyString& fileName) const
@@ -118,6 +179,7 @@ void PortableGrayMap::save(const MyString& fileName) const
 	}
 }
 
+
 PortableAnymap* PortableGrayMap::clone() const
 {
 	return new PortableGrayMap(*this);
@@ -154,6 +216,7 @@ void PortableGrayMap::negative()
 		}
 	}
 }
+
 
 void PortableGrayMap::rotate(const MyString& direction)
 {

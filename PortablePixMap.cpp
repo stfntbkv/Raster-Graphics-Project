@@ -2,6 +2,62 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
+void PortablePixMap::makeBitmapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	throw std::logic_error("Invalid file types");
+}
+void PortablePixMap::makeGraymapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	throw std::logic_error("Invalid file types");
+}
+void PortablePixMap::makePixmapCollage(const PortableAnymap& other, const MyString& newFileName, const MyString& direction) const
+{
+	const PortablePixMap& otherImage = dynamic_cast<const PortablePixMap&>(other);
+	if (strcmp(direction.c_str(), "vertical") == 0) {
+
+		int newHeight = height + other.getHeight();
+		MyVector<MyVector<Triple<unsigned short int>>> newImage;
+		for (size_t i = 0; i < height; i++)
+		{
+			MyVector<Triple<unsigned short int>> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(image[i][j]);
+			}
+			newImage.addItem(std::move(curRow));
+		}
+		for (size_t i = 0; i < other.getHeight(); i++)
+		{
+			MyVector<Triple<unsigned short int>> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(otherImage.image[i][j]);
+			}
+			newImage.addItem(std::move(curRow));
+		}
+		PortableAnymap* curImage = new PortablePixMap(newFileName, newHeight, width, std::move(newImage), isBinary, maxValue);
+		curImage->save(newFileName);
+	}
+	else if (strcmp(direction.c_str(), "horizontal") == 0) {
+		int newWidth = width + other.getWidth();
+		MyVector<MyVector<Triple<unsigned short int>>> newImage;
+		for (size_t i = 0; i < height; i++)
+		{
+			MyVector<Triple<unsigned short int>> curRow;
+			for (size_t j = 0; j < width; j++)
+			{
+				curRow.addItem(image[i][j]);
+			}
+			for (size_t j = 0; j < other.getWidth(); j++)
+			{
+				curRow.addItem(otherImage.image[i][j]);
+			}
+			newImage.addItem(curRow);
+		}
+		PortableAnymap* curImage = new PortablePixMap(newFileName, newWidth, height, std::move(newImage), isBinary, maxValue);
+		curImage->save(newFileName);
+	}
+}
 PortablePixMap::PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image, bool isBinary, short unsigned int maxValue) :
 	PortableAnymap(filename,height,width),image(std::move(image)),isBinary(isBinary),maxValue(maxValue)
 {
@@ -27,6 +83,9 @@ void PortablePixMap::print() const
 		}
 		std::cout << std::endl;
 	}
+}
+void PortablePixMap::makeCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
 }
 static void printBinaryRepresentation(const unsigned char* data, size_t dataSize) {
 	for (size_t i = 0; i < dataSize; ++i) {

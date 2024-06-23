@@ -113,6 +113,25 @@ void run() {
 			MyString str;
 			std::cin >> str;
 			sessions[activeSessionIndex - 1].saveas(str);
+		}else if (strcmp(command.c_str(), "collage") == 0) {
+			std::cin.ignore();
+			MyString direction;
+			std::cin >> direction;
+
+			std::cin.ignore();
+			char buff[128];
+			std::cin.getline(buff, 128);
+			std::stringstream ss(buff);
+			char filename[128];
+			MyVector<MyString> filenames;
+			while (!ss.eof()) {
+				ss.getline(filename, 128, ' ');
+				filenames.addItem(filename);
+			}
+			if (filenames.getSize() != 3) { throw std::logic_error("Invalid number of filenames"); }
+			Polymorphic_Ptr<PortableAnymap> firstImage = sessions[activeSessionIndex - 1].getImageByFile(filenames[0]);
+			Polymorphic_Ptr<PortableAnymap> secondImage = sessions[activeSessionIndex - 1].getImageByFile(filenames[1]);
+			firstImage->makeCollage(*secondImage, filenames[2], direction);
 		}
 		else {
 			std::cout << "Invalid Command" << std::endl;
@@ -125,7 +144,10 @@ void run() {
 int main()
 {
 	run();
-	//PortableAnymap* map = PortableAnymapFactroy::create("imagePPM.ppm");
+	//PortableAnymap* map1 = PortableAnymapFactroy::create("image1.pbm");
+	//PortableAnymap* map2 = PortableAnymapFactroy::create("image1.pbm");
+	//map1->makeCollage(*map2, "imageCollagePbm.pbm", "horizontal");
+
 	//std::cout << std::endl;
 	//map->print();
 	//map->save();

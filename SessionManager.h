@@ -27,8 +27,10 @@ public:
 	void sessionInfo() const;
 	int getSize() const;
 	int getId() const;
+	const Polymorphic_Ptr<PortableAnymap> getImageByFile(const MyString& fileName) const;
 	void save();
 	void undo();
 	void saveas(const MyString& fileName) const;
+	void makeCollage(int firstIndex, int secondIndex, const MyString& direction, const MyString& fileName);
 };
 
