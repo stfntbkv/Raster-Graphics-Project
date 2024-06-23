@@ -6,6 +6,7 @@ class PortablePixMap : public PortableAnymap
 	MyVector<MyVector<Triple<short unsigned int>>> image;
 	short unsigned int maxValue;
 	bool isBinary;
+
 protected:
 	void makeBitmapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const override;
 	void makeGraymapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const override;

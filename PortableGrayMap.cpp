@@ -7,6 +7,9 @@ void PortableGrayMap::makeBitmapCollage(const PortableAnymap& other, const MyStr
 }
 void PortableGrayMap::makeGraymapCollage(const PortableAnymap& other, const MyString& newFileName, const MyString& direction) const
 {
+	if (newFileName.substr(newFileName.getSize() - 4, 4) != ".pgm") {
+		throw std::logic_error("Invalid file name for the new image");
+	}
 	const PortableGrayMap& otherImage = dynamic_cast<const PortableGrayMap&>(other);
 	if (strcmp(direction.c_str(), "vertical") == 0) {
 
@@ -51,6 +54,9 @@ void PortableGrayMap::makeGraymapCollage(const PortableAnymap& other, const MySt
 		}
 		PortableAnymap* curImage = new PortableGrayMap(newFileName, height, newWidth, std::move(newImage), isBinary,maxValue);
 		curImage->save(newFileName);
+	}
+	else {
+		throw std::logic_error("Invalid direction");
 	}
 }
 void PortableGrayMap::makePixmapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
@@ -98,7 +104,7 @@ void PortableGrayMap::save(const MyString& fileName) const
 	if (isBinary) {
 		std::ofstream ofs(fileName.c_str());
 		if (!ofs.is_open()) {
-			throw std::exception("Couldn't open file");
+			throw std::logic_error("Couldn't open file");
 		}
 		ofs << "P5\n";
 		for (size_t i = 0; i < comments.getSize(); i++)
@@ -113,7 +119,7 @@ void PortableGrayMap::save(const MyString& fileName) const
 
 		std::ofstream ofsBinary(fileName.c_str(), std::ios::binary | std::ios::in);
 		if (!ofsBinary.is_open()) {
-			throw std::exception("Couldn't open file");
+			throw std::logic_error("Couldn't open file");
 		}
 		ofsBinary.seekp(curPos);
 
@@ -154,7 +160,7 @@ void PortableGrayMap::save(const MyString& fileName) const
 	else {
 		std::ofstream ofs(fileName.c_str());
 		if (!ofs.is_open()) {
-			throw std::exception("Couldn't open file");
+			throw std::logic_error("Couldn't open file");
 		}
 		ofs << "P2\n";
 		for (size_t i = 0; i < comments.getSize(); i++)
@@ -216,10 +222,8 @@ void PortableGrayMap::negative()
 	}
 }
 
-
 void PortableGrayMap::rotate(const MyString& direction)
 {
-
 		if (direction == "left") {
 			MyVector<MyVector<unsigned short int>> newImage;
 

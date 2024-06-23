@@ -94,7 +94,6 @@ void SessionManager::undo()
     if (!history.isEmpty()) {
         Polymorphic_Ptr<Command> temp = history.peek();
         temp->undo();
-
         history.pop();
     }
 }
@@ -115,31 +114,8 @@ void SessionManager::saveas(const MyString& fileName) const
         images[0]->save(fileName);
     }
     
-
-    
    
     
 }
 
-void SessionManager::makeCollage(int firstIndex, int secondIndex, const MyString& direction, const MyString& fileName)
-{
-    std::ifstream ifs1(images[firstIndex]->getFileName().c_str());
-    MyString firstImageType;
-    ifs1 >> firstImageType;
-    std::ifstream ifs2(images[secondIndex]->getFileName().c_str());
-    MyString secondImageType;
-    ifs2 >> secondImageType;
-    if (firstImageType != secondImageType) {
-        throw std::logic_error("The types of the two images should be the same");
-    }
-    else if ((images[firstIndex]->getHeight() != images[secondIndex]->getHeight()) ||
-        (images[firstIndex]->getWidth() != images[secondIndex]->getWidth())) {
-        throw std::logic_error("The images should have the same sizes");
-    }
-    if (strcmp(direction.c_str(), "vertical")) {
-        if (firstImageType == "P1") {
-            
-        }
-    }
 
-}

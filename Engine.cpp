@@ -8,7 +8,6 @@ int SessionManager::nextId = 1;
 	MyVector<SessionManager> sessions;
 	int activeSessionIndex = 0;
 	while (true) {
-
 		if (strcmp(command.c_str(), "load") == 0) {
 			std::cin.ignore();
 			char buff[128];
@@ -102,6 +101,9 @@ int SessionManager::nextId = 1;
 		else if (strcmp(command.c_str(), "switch") == 0) {
 			int sesIndex;
 			std::cin >> sesIndex;
+			if (sesIndex > sessions.getSize()) {
+				throw std::logic_error("Invalid index");
+			}
 			activeSessionIndex = sesIndex;
 		}
 		else if (strcmp(command.c_str(), "saveas") == 0) {
@@ -114,7 +116,6 @@ int SessionManager::nextId = 1;
 			std::cin.ignore();
 			MyString direction;
 			std::cin >> direction;
-
 			std::cin.ignore();
 			char buff[128];
 			std::cin.getline(buff, 128);

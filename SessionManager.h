@@ -31,6 +31,5 @@ public:
 	void save();
 	void undo();
 	void saveas(const MyString& fileName) const;
-	void makeCollage(int firstIndex, int secondIndex, const MyString& direction, const MyString& fileName);
 };
 

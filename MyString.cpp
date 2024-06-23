@@ -112,8 +112,6 @@ MyString& MyString::operator+=(const MyString& other)
     if (getSize() + other.getSize() + 1 > _allocatedDataSize)
         resize(dataToAllocByStringLen(getSize() + other.getSize()));
 
-    // we need to use strncat instead of strcat, because strcat will not work for str += str
-    // (the terminating zero of str will be destroyed by the first char)
     std::strncat(_data, other._data, other.getSize());
 
     _size = getSize() + other.getSize();
@@ -186,7 +184,7 @@ MyString MyString::substr(size_t begin, size_t howMany) const
 MyString operator+(const MyString& lhs, const MyString& rhs)
 {
     MyString result(lhs.getSize() + rhs.getSize());
-    result += lhs; // no resize is needed
+    result += lhs; 
     result += rhs;
     return result;
 }

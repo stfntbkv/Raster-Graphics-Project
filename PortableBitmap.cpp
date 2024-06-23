@@ -3,6 +3,9 @@
 
 void PortableBitmap::makeBitmapCollage(const PortableAnymap& other, const MyString& newFileName, const MyString& direction) const
 {
+	if (newFileName.substr(newFileName.getSize() - 4, 4) != ".pgm") {
+		throw std::logic_error("Invalid file name for the new image");
+	}
 	const PortableBitmap& otherImage = dynamic_cast<const PortableBitmap&>(other);
 	if (strcmp(direction.c_str(), "vertical") ==0 ) {
 		
@@ -48,6 +51,10 @@ void PortableBitmap::makeBitmapCollage(const PortableAnymap& other, const MyStri
 		PortableBitmap* curImage = new PortableBitmap(newFileName, height, newWidth, std::move(newImage), isBinary);
 		curImage->save(newFileName);
 	}
+	else {
+		throw std::logic_error("Invalid direction");
+	}
+
 }
 
 void PortableBitmap::makeGraymapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
@@ -94,7 +101,7 @@ void PortableBitmap::save(const MyString& fileName) const
 	if (isBinary) {
 		std::ofstream ofs(fileName.c_str());
 		if (!ofs.is_open()) {
-			throw std::exception("Couldn't open file");
+			throw std::logic_error("Couldn't open file");
 		}
 		ofs << "P4\n";
 		for (size_t i = 0; i < comments.getSize(); i++)
@@ -140,7 +147,7 @@ void PortableBitmap::save(const MyString& fileName) const
 	else {
 		std::ofstream ofs(fileName.c_str() );
 		if (!ofs.is_open()) {
-			throw std::exception("Couldn't open file");
+			throw std::logic_error("Couldn't open file");
 		}
 		ofs << "P1\n";
 		for (size_t i = 0; i < comments.getSize(); i++)

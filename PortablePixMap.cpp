@@ -2,6 +2,37 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
+
+PortablePixMap::PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image, bool isBinary, short unsigned int maxValue) :
+	PortableAnymap(filename,height,width),image(std::move(image)),isBinary(isBinary),maxValue(maxValue)
+{
+}
+PortablePixMap::PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image, bool isBinary, short unsigned int maxValue, const MyVector<MyString>& comments) :
+	PortableAnymap(filename, height, width,comments), image(std::move(image)), isBinary(isBinary), maxValue(maxValue)
+{
+}
+void PortablePixMap::print() const
+{
+	unsigned short int maxWidth = (std::floor(std::log10(maxValue) + 1));
+	for (size_t i = 0; i < comments.getSize(); i++)
+	{
+		std::cout << comments[i] << std::endl;
+	}
+	for (size_t i = 0; i < height; i++)
+	{
+		for (size_t j = 0; j < width; j++)
+		{
+			std::cout << std::setw(maxWidth) << image[i][j].getFirst() << " "
+				<< std::setw(maxWidth) << image[i][j].getSecond() << " "
+				<< std::setw(maxWidth) << image[i][j].getThird() << "  ";
+		}
+		std::cout << std::endl;
+	}
+}
+void PortablePixMap::makeCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
+{
+	other.makePixmapCollage(other,fileName,direction);
+}
 void PortablePixMap::makeBitmapCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
 {
 	throw std::logic_error("Invalid file types");
@@ -12,6 +43,9 @@ void PortablePixMap::makeGraymapCollage(const PortableAnymap& other, const MyStr
 }
 void PortablePixMap::makePixmapCollage(const PortableAnymap& other, const MyString& newFileName, const MyString& direction) const
 {
+	if (newFileName.substr(newFileName.getSize() - 4, 4) != ".ppm") {
+		throw std::logic_error("Invalid file name for the new image");
+	}
 	const PortablePixMap& otherImage = dynamic_cast<const PortablePixMap&>(other);
 	if (strcmp(direction.c_str(), "vertical") == 0) {
 
@@ -57,35 +91,9 @@ void PortablePixMap::makePixmapCollage(const PortableAnymap& other, const MyStri
 		PortableAnymap* curImage = new PortablePixMap(newFileName, height, newWidth, std::move(newImage), isBinary, maxValue);
 		curImage->save(newFileName);
 	}
-}
-PortablePixMap::PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image, bool isBinary, short unsigned int maxValue) :
-	PortableAnymap(filename,height,width),image(std::move(image)),isBinary(isBinary),maxValue(maxValue)
-{
-}
-PortablePixMap::PortablePixMap(const MyString& filename, size_t height, size_t width, MyVector<MyVector<Triple<short unsigned int>>>&& image, bool isBinary, short unsigned int maxValue, const MyVector<MyString>& comments) :
-	PortableAnymap(filename, height, width,comments), image(std::move(image)), isBinary(isBinary), maxValue(maxValue)
-{
-}
-void PortablePixMap::print() const
-{
-	unsigned short int maxWidth = (std::floor(std::log10(maxValue) + 1));
-	for (size_t i = 0; i < comments.getSize(); i++)
-	{
-		std::cout << comments[i] << std::endl;
+	else {
+		throw std::logic_error("Invalid direction");
 	}
-	for (size_t i = 0; i < height; i++)
-	{
-		for (size_t j = 0; j < width; j++)
-		{
-			std::cout << std::setw(maxWidth) << image[i][j].getFirst() << " "
-				<< std::setw(maxWidth) << image[i][j].getSecond() << " "
-				<< std::setw(maxWidth) << image[i][j].getThird() << "  ";
-		}
-		std::cout << std::endl;
-	}
-}
-void PortablePixMap::makeCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
-{
 }
 
 void PortablePixMap::save(const MyString& fileName) const
@@ -93,7 +101,7 @@ void PortablePixMap::save(const MyString& fileName) const
 	if (isBinary) {
 		std::ofstream ofs(fileName.c_str());
 		if (!ofs.is_open()) {
-			throw std::exception("Couldn't open file");
+			throw std::logic_error("Couldn't open file");
 		}
 		ofs << "P6\n";
 		for (size_t i = 0; i < comments.getSize(); i++)
@@ -107,7 +115,7 @@ void PortablePixMap::save(const MyString& fileName) const
 
 		std::ofstream ofsBinary(fileName.c_str(), std::ios::binary | std::ios::in | std::ios::out);
 		if (!ofsBinary.is_open()) {
-			throw std::exception("Couldn't open file");
+			throw std::logic_error ("Couldn't open file");
 		}
 		ofsBinary.seekp(curPos);
 		int dataSize = 3*(height * width);
@@ -147,6 +155,9 @@ void PortablePixMap::save(const MyString& fileName) const
 	}
 	else {
 		std::ofstream ofs(fileName.c_str());
+		if (!ofs.is_open()) {
+			std::logic_error("The file couldn't be oppened");
+		}
 		ofs << "P3\n";
 		for (size_t i = 0; i < comments.getSize(); i++)
 		{

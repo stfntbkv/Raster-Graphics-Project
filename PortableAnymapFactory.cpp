@@ -234,5 +234,8 @@ PortableAnymap *PortableAnymapFactroy::create(const MyString& filename) {
     else if (strcmp(str.c_str(), "P6") == 0) {
         map = createP6(filename, ifs, height, width, comments);
     }
+    else {
+        throw std::logic_error("Invalid file content");
+    }
     return map;
 }
