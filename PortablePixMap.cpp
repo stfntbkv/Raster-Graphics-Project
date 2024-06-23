@@ -54,7 +54,7 @@ void PortablePixMap::makePixmapCollage(const PortableAnymap& other, const MyStri
 			}
 			newImage.addItem(curRow);
 		}
-		PortableAnymap* curImage = new PortablePixMap(newFileName, newWidth, height, std::move(newImage), isBinary, maxValue);
+		PortableAnymap* curImage = new PortablePixMap(newFileName, height, newWidth, std::move(newImage), isBinary, maxValue);
 		curImage->save(newFileName);
 	}
 }
@@ -87,16 +87,7 @@ void PortablePixMap::print() const
 void PortablePixMap::makeCollage(const PortableAnymap& other, const MyString& fileName, const MyString& direction) const
 {
 }
-static void printBinaryRepresentation(const unsigned char* data, size_t dataSize) {
-	for (size_t i = 0; i < dataSize; ++i) {
-		unsigned char byte = static_cast<unsigned char>(data[i]);
-		for (int bit = 7; bit >= 0; --bit) {
-			std::cout << ((byte >> bit) & 1);
-		}
-		std::cout << ' ';
-	}
-	std::cout << std::endl;
-}
+
 void PortablePixMap::save(const MyString& fileName) const
 {
 	if (isBinary) {

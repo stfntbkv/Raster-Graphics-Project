@@ -16,7 +16,7 @@ class SessionManager
 	
 public:
 	MyVector<Polymorphic_Ptr<PortableAnymap>> images;
-	SessionManager();
+	SessionManager() = default;
 	SessionManager(MyVector<Polymorphic_Ptr<PortableAnymap>>&& images);
 	SessionManager(const MyVector<Polymorphic_Ptr<PortableAnymap>>& images);
 	void add(PortableAnymap* image);

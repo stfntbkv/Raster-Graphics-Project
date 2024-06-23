@@ -74,16 +74,7 @@ PortableBitmap::PortableBitmap(const MyString& filename, size_t height, size_t w
 	: PortableAnymap(filename, height, width,comments), image(std::move(image)), isBinary(isBinary)
 {
 }
-static void printBinaryRepresentation(const char* data, size_t dataSize) {
-	for (size_t i = 0; i < dataSize; ++i) {
-		unsigned char byte = static_cast<unsigned char>(data[i]);
-		for (int bit = 7; bit >= 0; --bit) {
-			std::cout << ((byte >> bit) & 1);
-		}
-		std::cout << ' ';
-	}
-	std::cout << std::endl;
-}
+
 
 
 void PortableBitmap::print() const

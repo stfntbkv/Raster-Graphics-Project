@@ -1,8 +1,6 @@
 #include "SessionManager.h"
 #include <fstream>
-SessionManager::SessionManager()
-{
-}
+
 
 SessionManager::SessionManager(MyVector<Polymorphic_Ptr<PortableAnymap>>&& images) : images(std::move(images))
 {

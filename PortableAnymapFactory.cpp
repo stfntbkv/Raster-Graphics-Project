@@ -3,16 +3,7 @@
 //
 
 #include "PortableAnymapFactory.h"
-void printBinaryRepresentation(const unsigned char* data, size_t dataSize) {
-    for (size_t i = 0; i < dataSize; ++i) {
-        unsigned char byte = static_cast<unsigned char>(data[i]);
-        for (int bit = 7; bit >= 0; --bit) {
-            std::cout << ((byte >> bit) & 1);
-        }
-        std::cout << ' ';
-    }
-    std::cout << std::endl;
-}
+
 PortableAnymap *PortableAnymapFactroy::createP4(const MyString& filename,std::ifstream& ifs, size_t height, size_t width, const MyVector<MyString>& comments) {
     size_t curPos = ifs.tellg();
     ifs.close();

@@ -163,7 +163,6 @@ void PortableGrayMap::save(const MyString& fileName) const
 		}
 		ofs << width << " " << height << '\n';
 		ofs << maxValue << '\n';
-		/*unsigned short int maxWidth = (std::floor(std::log10(maxValue) + 1));*/
 		for (size_t i = 0; i < height; i++)
 		{
 			for (size_t j = 0; j < width; j++)
